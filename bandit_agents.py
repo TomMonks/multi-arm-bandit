@@ -17,6 +17,7 @@ class EpsilonGreedy(object):
 
         environment -- object implementing action interface...to add.
         '''
+        self.__validate_init(epsilon, budget, environment)
         environment.register_observer(self)
         self._env = environment
         self._epsilon = epsilon
@@ -26,6 +27,34 @@ class EpsilonGreedy(object):
         self._actions = np.zeros(environment.number_of_arms, np.int32)
         self._means = np.zeros(environment.number_of_arms, np.float64)
         
+    def __validate_init(self, epsilon, budget, environment):
+        '''
+        Validate the arguments passed to the constructor method
+
+        Keyword arguments:
+        ------
+        epsilon -- float, proportion of time to explore the environment.
+                   1 - epsilon = the proportion of time to exploit 
+                   (make greedy decisions) about the environment
+
+        budget -- int, number of iterations of the algorithm to run
+
+        environment -- object implementing action interface...to add.
+        '''
+        self.__validate_epsilon(epsilon)
+        self.__validate_budget(budget)
+        
+    def __validate_epsilon(self, epsilon):
+        if type(epsilon) != float or epsilon < 0.0 or epsilon > 1.0:
+            msg = 'epsilon argument must be a float value between 0 and 1'
+            raise ValueError(msg)
+
+    def __validate_budget(self, budget):
+        if budget < 0:
+            msg = 'budget argument must be a int > 0'
+            raise ValueError(msg)
+
+
 
     def __get_total_reward(self):
         return self._total_reward

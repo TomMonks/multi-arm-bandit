@@ -2,6 +2,30 @@ import numpy as np
 
 
 class EpsilonGreedy(object):
+    '''
+    Encapsulates an Epsilon-Greedy based agent for reinforcement learning
+    in multu-arm bandit problems.  The agent interacts and learns from  
+    an environment consisting of multiple bandit arms
+
+    Epsilon-Greedy tackles the explore-exploit dilemma by acting greedy
+    1 - epsilon of the time and explore epsilon of the time.  
+
+    Note: Implements the observer pattern to recieve feedback from the 
+    environment
+
+    Public properties:
+    -------
+    total_reward -- float, the cumulative reward recieved from the environment
+    actions -- np.ndarry (vector), a record of the actions (arms) that have been 
+               taken by the agent.
+            
+    Public methods:
+    --------
+    solve() -- initiates the algorithm for the budget specified
+    feedback() -- observer pattern notification method.  This is called by the
+                  environment when the result of an action is ready to be reported.
+
+    '''
 
     def __init__(self, epsilon, budget, environment):
         '''

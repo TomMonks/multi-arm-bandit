@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from relearn.bandit_world.agents import EpsilonGreedy
+from relearn.bandit_world.agents import EpsilonGreedy, AnnealingEpsilonGreedy
 from relearn.bandit_world.environments import (BernoulliBandit, 
                                                BernoulliCasino, 
                                                standard_bandit_problem,
@@ -13,7 +13,7 @@ def experiment():
     simple example experiment of the MAB
     '''
     #to reproduce the result set a random seed
-    np.random.seed(101)
+    np.random.seed(99)
 
     bandit_arms = standard_bandit_problem()
 
@@ -22,6 +22,26 @@ def experiment():
     agent = EpsilonGreedy(epsilon=0.1, budget=1000, environment=environment)
     agent.solve()
     
+    print_reward(agent)
+    visualise_agent_actions(agent)
+
+
+def anneal_experiment():
+    '''
+    simple example experiment of the MAB
+    using AnnealingEpsilonGreedy
+    '''
+    #to reproduce the result set a random seed
+    np.random.seed(99)
+
+    bandit_arms = standard_bandit_problem()
+
+    environment = BernoulliCasino(bandits=bandit_arms)
+
+    agent = AnnealingEpsilonGreedy(budget=1000, environment=environment)
+    agent.solve()
+    
+    print(agent._epsilon)
     print_reward(agent)
     visualise_agent_actions(agent)
 
@@ -50,4 +70,5 @@ def visualise_agent_actions(agent):
 
 if __name__ == '__main__':
     experiment()
+    anneal_experiment()
 

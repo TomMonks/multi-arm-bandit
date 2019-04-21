@@ -179,4 +179,57 @@ class EpsilonGreedy(object):
     total_reward = property(_get_total_reward)
     actions = property(_get_action_history)
 
-        
+
+
+class AnnealingEpsilonGreedy(EpsilonGreedy):
+
+    def __init__(self, budget, environment):
+        '''
+        Constructor method for AnnealingEpsilonGreedy
+        '''
+        environment.register_observer(self)
+        self._env = environment
+        self._total_rounds = budget
+        self._total_reward = 0
+        self._current_round = 0
+        self._actions = np.zeros(environment.number_of_arms, np.int32)
+        self._means = np.zeros(environment.number_of_arms, np.float64)
+        self._epsilon = np.inf
+        self._anneal_epsilon()
+
+    def _anneal_epsilon(self):
+        '''
+        Gradual cooling of epsilon so that exploration
+        less likely in later rounds of learning
+        '''
+        t = np.sum(self._actions) + 1
+        self._epsilon = 1 / np.log(t + 1e-6)
+
+    def feedback(self, *args, **kwargs):
+        '''
+        Feedback from the environment
+        Recieves a reward and updates understanding
+        of an arm.  
+        After each learning cycle it 
+
+        Keyword arguments:
+        ------
+        *args -- list of argument
+                 0  sender object
+                 1. arm index to update
+                 2. reward
+
+        *kwards -- dict of keyword arguments:
+                   None expected!
+
+        '''
+        arm_index = args[1]
+        reward = args[2]
+        self._total_reward += reward
+        self._actions[arm_index] +=1
+        self._means[arm_index] = self.updated_reward_estimate(arm_index, reward)
+        self._anneal_epsilon()
+
+
+
+

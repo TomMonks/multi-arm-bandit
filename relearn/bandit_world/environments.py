@@ -134,25 +134,46 @@ class BernoulliCasino(object):
     number_of_arms = property(__get_number_of_arms)
 
 
-def main(budget):
+def custom_bandit_problem(*means):
     '''
+    Creates a list of BernouliBandit objects with
+    user specified means
+
     Keyword arguments:
-    -----
-    budget -- int, number of plays
+    ------
+    *means - variable size list of means
+
+    Returns:
+    ------
+    list, BernoulliBandits size = len(means)
+    '''
+    return [BernoulliBandit(mean) for mean in means]
+
+def standard_bandit_problem():
+    '''
+    Creates a list of 10 BernouliBandit objects 
+    means:
+    0.1, 0.7, 0.1, 0.2, 0.3, 0.4, 0.45, 0.6, 0.9, 0.75
+
+    Returns:
+    ------
+    list, BernoulliBandits size = 10
     '''
 
-    bandit_arms = [BernoulliBandit(p_success=0.3),
-                   BernoulliBandit(p_success=0.5),
-                   BernoulliBandit(p_success=0.7)]
-
-    environment = BernoulliCasino(bandits=bandit_arms)
-
+    return custom_bandit_problem(0.1, 0.7, 0.1, 0.2, 0.3, 0.4, 
+                                 0.45, 0.6, 0.9, 0.75)
     
 
-
-def print_state(casino):
-    for arm in casino:
-        print(arm.win_proportion())
+def small_bandit_problem():
+    '''
+    Creates a list of 3 BernouliBandit objects 
+    means:
+    0.3, 0.5, 0.1
+    Returns:
+    ------
+    list, BernoulliBandits size = 10
+    '''
+    return custom_bandit_problem(0.3, 0.5, 0.1)
 
 
 

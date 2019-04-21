@@ -2,25 +2,26 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from relearn.bandit_world.agents import EpsilonGreedy
-from relearn.bandit_world.environments import BernoulliBandit, BernoulliCasino
+from relearn.bandit_world.environments import (BernoulliBandit, 
+                                               BernoulliCasino, 
+                                               standard_bandit_problem,
+                                               custom_bandit_problem,
+                                               small_bandit_problem)
 
 def experiment():
     '''
     main test function
     '''
-    bandit_arms = create_bandits(0.3, 0.75, 0.2, 0.5, 0.6, 0.7, 0.4)
+    bandit_arms = small_bandit_problem()
 
     environment = BernoulliCasino(bandits=bandit_arms)
 
-    agent = EpsilonGreedy(epsilon=0.1, budget=2000, environment=environment)
+    agent = EpsilonGreedy(epsilon=0.1, budget=1000, environment=environment)
 
     agent.solve()
 
     print_reward(agent)
     visualise_agent_actions(agent)
-
-def create_bandits(*means):
-    return [BernoulliBandit(mean) for mean in means]
 
 def print_reward(agent):
     print('Total reward: {}'.format(agent.total_reward))

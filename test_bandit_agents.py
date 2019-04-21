@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from bandit_agents import EpsilonGreedy
-from bernoulli_bandit import BernoulliBandit, BernoulliCasino
+from relearn.bandit_world.agents import EpsilonGreedy
+from relearn.bandit_world.environments import BernoulliBandit, BernoulliCasino
 
-def main():
+def experiment():
     '''
     main test function
     '''
@@ -16,15 +16,18 @@ def main():
 
     agent.solve()
 
-    print('Total reward: {}'.format(agent.total_reward))
-    print(agent._means)
-    visualise_actions(agent.actions)
+    print_reward(agent)
+    visualise_agent_actions(agent)
 
 def create_bandits(*means):
     return [BernoulliBandit(mean) for mean in means]
 
+def print_reward(agent):
+    print('Total reward: {}'.format(agent.total_reward))
+    print(agent._means)
 
-def visualise_actions(actions):
+
+def visualise_agent_actions(agent):
     '''
     Visualise the actions taken in a bar chart
 
@@ -34,6 +37,7 @@ def visualise_actions(actions):
                arm was pulled
     
     '''
+    actions = agent.actions
     x = [i + 1 for i in range(actions.shape[0])]
     plt.bar(x, actions)
     plt.title('Histogram of Actions Taken by Algorithm')
@@ -42,5 +46,5 @@ def visualise_actions(actions):
     plt.show()
 
 if __name__ == '__main__':
-    main()
+    experiment()
 

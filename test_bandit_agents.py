@@ -10,16 +10,18 @@ from relearn.bandit_world.environments import (BernoulliBandit,
 
 def experiment():
     '''
-    main test function
+    simple example experiment of the MAB
     '''
-    bandit_arms = small_bandit_problem()
+    #to reproduce the result set a random seed
+    np.random.seed(101)
+
+    bandit_arms = standard_bandit_problem()
 
     environment = BernoulliCasino(bandits=bandit_arms)
 
     agent = EpsilonGreedy(epsilon=0.1, budget=1000, environment=environment)
-
     agent.solve()
-
+    
     print_reward(agent)
     visualise_agent_actions(agent)
 

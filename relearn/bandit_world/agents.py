@@ -1,3 +1,12 @@
+'''
+Agents that are designed to solve an instance of multi-arm bandit problem
+
+Classes:
+--------
+EpsilonGreedy --    Epsilon-Greedy tackles the explore-exploit dilemma by acting greedy
+                    1 - epsilon of the time and explore epsilon of the time.  
+
+'''
 import numpy as np 
 
 
@@ -41,7 +50,7 @@ class EpsilonGreedy(object):
 
         environment -- object implementing action interface...to add.
         '''
-        self.__validate_init(epsilon, budget, environment)
+        self._validate_init(epsilon, budget, environment)
         environment.register_observer(self)
         self._env = environment
         self._epsilon = epsilon
@@ -51,7 +60,7 @@ class EpsilonGreedy(object):
         self._actions = np.zeros(environment.number_of_arms, np.int32)
         self._means = np.zeros(environment.number_of_arms, np.float64)
         
-    def __validate_init(self, epsilon, budget, environment):
+    def _validate_init(self, epsilon, budget, environment):
         '''
         Validate the arguments passed to the constructor method
 
@@ -65,25 +74,23 @@ class EpsilonGreedy(object):
 
         environment -- object implementing action interface...to add.
         '''
-        self.__validate_epsilon(epsilon)
-        self.__validate_budget(budget)
+        self._validate_epsilon(epsilon)
+        self._validate_budget(budget)
         
-    def __validate_epsilon(self, epsilon):
+    def _validate_epsilon(self, epsilon):
         if type(epsilon) != float or epsilon < 0.0 or epsilon > 1.0:
             msg = 'epsilon argument must be a float value between 0 and 1'
             raise ValueError(msg)
 
-    def __validate_budget(self, budget):
+    def _validate_budget(self, budget):
         if budget < 0:
             msg = 'budget argument must be a int > 0'
             raise ValueError(msg)
 
-
-
-    def __get_total_reward(self):
+    def _get_total_reward(self):
         return self._total_reward
 
-    def __get_action_history(self):
+    def _get_action_history(self):
         return self._actions
     
     def solve(self):
@@ -169,7 +176,7 @@ class EpsilonGreedy(object):
         new_value = ((n - 1) / float(n)) * current_value + (1 / float(n)) * reward
         return new_value
 
-    total_reward = property(__get_total_reward)
-    actions = property(__get_action_history)
+    total_reward = property(_get_total_reward)
+    actions = property(_get_action_history)
 
         

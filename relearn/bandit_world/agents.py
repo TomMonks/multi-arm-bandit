@@ -182,6 +182,40 @@ class EpsilonGreedy(object):
 
 
 class AnnealingEpsilonGreedy(EpsilonGreedy):
+    '''
+    Encapsulates an Annealing Epsilon-Greedy based agent for reinforcement learning
+    in multi-arm bandit problems.  The agent interacts and learns from  
+    an environment consisting of multiple bandit arms
+
+    Epsilon-Greedy tackles the explore-exploit dilemma by acting greedy
+    1 - epsilon of the time and explore epsilon of the time. 
+
+    A potential drawback of the classical epsilon-greedy algorithm is that
+    epsilon is a constant and a hyper-parameter that cannot be known in advance.
+    The annealing version of the algorithm starts with a large value of epsilon
+    and gradually reduces its value over time.  This means that later experiments
+    are more likely to exploit than predict.  
+
+    Note: Implements the observer pattern to recieve feedback from the 
+    environment
+
+    Dev notes: Inherits from EpsilonGreedy - this could and probably should be 
+    set up by composition.  The downside is that a user has to compose the object
+    each time they wish to use it.  This keeps parameterisation lower.  
+
+    Public properties:
+    -------
+    total_reward -- float, the cumulative reward recieved from the environment
+    actions -- np.ndarry (vector), a record of the actions (arms) that have been 
+               taken by the agent.
+            
+    Public methods:
+    --------
+    solve() -- initiates the algorithm for the budget specified
+    feedback() -- observer pattern notification method.  This is called by the
+                  environment when the result of an action is ready to be reported.
+
+    '''
 
     def __init__(self, budget, environment):
         '''

@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(778, 324)
+        MainWindow.resize(753, 399)
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
         self.formLayoutWidget_2 = QtWidgets.QWidget(self.centralWidget)
@@ -45,9 +45,9 @@ class Ui_MainWindow(object):
         self.lbl_pull_count_2.setObjectName("lbl_pull_count_2")
         self.formLayout_2.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.lbl_pull_count_2)
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralWidget)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 100, 169, 211))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 100, 188, 231))
         font = QtGui.QFont()
-        font.setPointSize(18)
+        font.setPointSize(20)
         self.verticalLayoutWidget.setFont(font)
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
@@ -55,45 +55,53 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.pull_arm1 = QtWidgets.QPushButton(self.verticalLayoutWidget)
         font = QtGui.QFont()
-        font.setPointSize(18)
+        font.setPointSize(20)
         self.pull_arm1.setFont(font)
         self.pull_arm1.setObjectName("pull_arm1")
         self.verticalLayout.addWidget(self.pull_arm1)
         self.pull_arm2 = QtWidgets.QPushButton(self.verticalLayoutWidget)
         font = QtGui.QFont()
-        font.setPointSize(18)
+        font.setPointSize(20)
         self.pull_arm2.setFont(font)
         self.pull_arm2.setObjectName("pull_arm2")
         self.verticalLayout.addWidget(self.pull_arm2)
         self.pull_arm3 = QtWidgets.QPushButton(self.verticalLayoutWidget)
         font = QtGui.QFont()
-        font.setPointSize(18)
+        font.setPointSize(20)
         self.pull_arm3.setFont(font)
         self.pull_arm3.setObjectName("pull_arm3")
         self.verticalLayout.addWidget(self.pull_arm3)
         self.pull_arm4 = QtWidgets.QPushButton(self.verticalLayoutWidget)
         font = QtGui.QFont()
-        font.setPointSize(18)
+        font.setPointSize(20)
         self.pull_arm4.setFont(font)
         self.pull_arm4.setObjectName("pull_arm4")
         self.verticalLayout.addWidget(self.pull_arm4)
         self.pull_arm4_2 = QtWidgets.QPushButton(self.verticalLayoutWidget)
         font = QtGui.QFont()
-        font.setPointSize(18)
+        font.setPointSize(20)
         self.pull_arm4_2.setFont(font)
         self.pull_arm4_2.setObjectName("pull_arm4_2")
         self.verticalLayout.addWidget(self.pull_arm4_2)
         self.groupBox = QtWidgets.QGroupBox(self.centralWidget)
-        self.groupBox.setGeometry(QtCore.QRect(260, 10, 481, 301))
+        self.groupBox.setGeometry(QtCore.QRect(250, 10, 481, 321))
         font = QtGui.QFont()
         font.setPointSize(18)
         self.groupBox.setFont(font)
         self.groupBox.setObjectName("groupBox")
         self.tableWidget = QtWidgets.QTableWidget(self.groupBox)
-        self.tableWidget.setGeometry(QtCore.QRect(10, 50, 441, 201))
+        self.tableWidget.setGeometry(QtCore.QRect(10, 60, 461, 241))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.tableWidget.sizePolicy().hasHeightForWidth())
+        self.tableWidget.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
-        font.setPointSize(18)
+        font.setPointSize(20)
         self.tableWidget.setFont(font)
+        self.tableWidget.setLineWidth(1)
+        self.tableWidget.setShowGrid(True)
+        self.tableWidget.setGridStyle(QtCore.Qt.SolidLine)
         self.tableWidget.setObjectName("tableWidget")
         self.tableWidget.setColumnCount(3)
         self.tableWidget.setRowCount(5)
@@ -115,6 +123,13 @@ class Ui_MainWindow(object):
         self.tableWidget.setHorizontalHeaderItem(2, item)
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setItem(0, 0, item)
+        self.tableWidget.horizontalHeader().setMinimumSectionSize(55)
+        self.pull_arm4_3 = QtWidgets.QPushButton(self.centralWidget)
+        self.pull_arm4_3.setGeometry(QtCore.QRect(10, 340, 186, 41))
+        font = QtGui.QFont()
+        font.setPointSize(20)
+        self.pull_arm4_3.setFont(font)
+        self.pull_arm4_3.setObjectName("pull_arm4_3")
         MainWindow.setCentralWidget(self.centralWidget)
 
         self.retranslateUi(MainWindow)
@@ -150,6 +165,20 @@ class Ui_MainWindow(object):
         __sortingEnabled = self.tableWidget.isSortingEnabled()
         self.tableWidget.setSortingEnabled(False)
         self.tableWidget.setSortingEnabled(__sortingEnabled)
+        self.pull_arm4_3.setText(_translate("MainWindow", "Reset"))
+
+    def pulled(self, bandit_index):
+        self.tableWidget.item[bandit_index] += 1
+        
+
+
+#handler for the signal aka slot
+def onClick():
+    print('clicked')
+    
+
+
+
 
 
 if __name__ == "__main__":
@@ -158,6 +187,9 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
+
+    ui.pull_arm1.clicked.connect(onClick)
+    print(ui.tableWidget.item(0, 0))
     MainWindow.show()
     sys.exit(app.exec_())
 

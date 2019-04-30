@@ -86,7 +86,12 @@ def experiment():
     agent = HumanCasinoInterface(50, environment, QtWidgets.QMainWindow())
     agent.solve()
 
+    
+
+    print_reward(agent)
+    visualise_agent_actions(agent)
     sys.exit(app.exec_())
+
     
 
 

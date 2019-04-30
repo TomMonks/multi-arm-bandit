@@ -57,13 +57,14 @@ def init_column_to_zero(ui, table, column_index):
         item.setText("0")
         ui.tableWidget.setItem(i, column_index, item)
 
-def connect_buttons(ui):
+def connect_buttons(ui, agent):
     
-    ui.pull_arm1.clicked.connect(ui.pull_bandit1)
-    ui.pull_arm2.clicked.connect(ui.pull_bandit2)
-    ui.pull_arm3.clicked.connect(ui.pull_bandit3)
-    ui.pull_arm4.clicked.connect(ui.pull_bandit4)
-    ui.pull_arm4_2.clicked.connect(ui.pull_bandit5)
+    #ui.pull_arm1.clicked.connect(ui.pull_bandit1)
+    ui.pull_arm1.clicked.connect(agent.pull_bandit1)
+    ui.pull_arm2.clicked.connect(agent.pull_bandit2)
+    ui.pull_arm3.clicked.connect(agent.pull_bandit3)
+    ui.pull_arm4.clicked.connect(agent.pull_bandit4)
+    ui.pull_arm4_2.clicked.connect(agent.pull_bandit5)
 
 
 
@@ -101,11 +102,12 @@ class HumanCasinoInterface(object):
         self._current_round = 0
         self._actions = np.zeros(environment.number_of_arms, np.int32)
         self._means = np.zeros(environment.number_of_arms, np.float64)
+        self._arm_wins = np.zeros(environment.number_of_arms, np.int32)
         monkeypatch_ui()
         self._ui = Ui_MainWindow()
         self._ui.setupUi(main_window)
         init(self._ui, self._ui.tableWidget)
-        connect_buttons(self._ui)
+        connect_buttons(self._ui, self)
 
     def _get_total_reward(self):
         return self._total_reward
@@ -114,8 +116,37 @@ class HumanCasinoInterface(object):
         return self._actions
 
     def solve(self):
-        self._main_window.show()
+        self._main_window.show()     
+
+    def pull_bandit1(self):
+        self._environment.action(0)
+        pull_bandit(self._ui, 0)
+        complete_round(self._ui)
+
+    def pull_bandit2(self):
+        self._environment.action(1)
+        pull_bandit(self._ui, 1)
+        complete_round(self._ui)
+
+    def pull_bandit3(self):
+        self._environment.action(2)
+        pull_bandit(self._ui, 2)
+        complete_round(self._ui)
+
+    def pull_bandit4(self):
+        self._environment.action(3)
+        pull_bandit(self._ui, 3)
+        complete_round(self._ui)
+
+    def pull_bandit5(self):
+        self._environment.action(4)
+        pull_bandit(self._ui, 4)
+        complete_round(self._ui)
         
+    def pull_bandit(self, index):
+        pulls = int(self._ui.tableWidget.item(index, 0).text())
+        pulls += 1
+        self._ui.tableWidget.item(index, 0).setText(str(pulls))
 
     def feedback(self, *args, **kwargs):
         '''
@@ -140,6 +171,10 @@ class HumanCasinoInterface(object):
         self._total_reward += reward
         self._actions[arm_index] +=1
         self._means[arm_index] = self._updated_reward_estimate(arm_index, reward)
+        self._arm_wins[arm_index] += reward
+        self._ui.tableWidget.item(arm_index, 1).setText(str(self._arm_wins[arm_index]))        
+        self._ui.tableWidget.item(arm_index, 2).setText(str(round(self._means[arm_index], 2)))
+        self._update_total_reward()
 
     def _updated_reward_estimate(self, arm_index, reward):
         '''
@@ -158,6 +193,9 @@ class HumanCasinoInterface(object):
         current_value = self._means[arm_index]
         new_value = ((n - 1) / float(n)) * current_value + (1 / float(n)) * reward
         return new_value
+
+    def _update_total_reward(self):
+        self._ui.lbl_pull_count_2.display(str(self.total_reward))
 
     total_reward = property(_get_total_reward)
     actions = property(_get_action_history)

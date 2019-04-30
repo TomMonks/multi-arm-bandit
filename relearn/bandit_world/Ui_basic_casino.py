@@ -170,7 +170,8 @@ class Ui_MainWindow(object):
     def pulled(self, bandit_index):
         self.tableWidget.item[bandit_index] += 1
         
-
+    def pull_bandit1(self):
+        print(self.sender.objectname())
 
 #handler for the signal aka slot
 def onClick():

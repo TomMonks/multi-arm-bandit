@@ -265,6 +265,65 @@ class AnnealingEpsilonGreedy(EpsilonGreedy):
         self._anneal_epsilon()
 
 
+class OptimisticInitialValues(EpsilonGreedy):
+    '''
+    Encapsulates an Optimistic Initial Values and Greedy based agent 
+    for reinforcement learning in multi-arm bandit problems.  T
+    he agent interacts and learns from  an environment consisting of multiple bandit arms
+
+    Epsilon-Greedy tackles the explore-exploit dilemma by acting greedy
+    1 - epsilon of the time and explore epsilon of the time. 
+
+    A potential drawback of the classical epsilon-greedy algorithm is that
+    epsilon is a constant and a hyper-parameter that cannot be known in advance.
+    The annealing version of the algorithm starts with a large value of epsilon
+    and gradually reduces its value over time.  This means that later experiments
+    are more likely to exploit than predict.  
+
+    Note: Implements the observer pattern to recieve feedback from the 
+    environment
+
+    Dev notes: Inherits from EpsilonGreedy - this could and probably should be 
+    set up by composition.  The downside is that a user has to compose the object
+    each time they wish to use it.  This keeps parameterisation lower.  
+
+    Public properties:
+    -------
+    total_reward -- float, the cumulative reward recieved from the environment
+    actions -- np.ndarry (vector), a record of the actions (arms) that have been 
+               taken by the agent.
+            
+    Public methods:
+    --------
+    solve() -- initiates the algorithm for the budget specified
+    feedback() -- observer pattern notification method.  This is called by the
+                  environment when the result of an action is ready to be reported.
+
+    '''
+
+    def __init__(self, budget, environment, init_value=1.0):
+        '''
+        Constructor method for AnnealingEpsilonGreedy
+        '''
+        environment.register_observer(self)
+        self._env = environment
+        self._total_rounds = budget
+        self._total_reward = 0
+        self._current_round = 0
+        self._actions = np.zeros(environment.number_of_arms, np.int32)
+        self._means = np.full(environment.number_of_arms, init_value, np.float64)
+        
+    def solve(self):
+        '''
+        Run the optimistic init values / greedy algorithm in the 
+        environment to find the best arm 
+        '''
+        for i in range(self._total_rounds):
+            self._exploit()
+            self._current_round += 1
+        
+
+
 
         
 

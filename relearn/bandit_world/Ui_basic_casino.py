@@ -7,11 +7,17 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from PyQt5.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout
+import random 
+
+import matplotlib.pyplot as plt
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(753, 399)
+        MainWindow.resize(1500, 399)
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
         self.formLayoutWidget_2 = QtWidgets.QWidget(self.centralWidget)
@@ -130,6 +136,9 @@ class Ui_MainWindow(object):
         font.setPointSize(20)
         self.pull_arm4_3.setFont(font)
         self.pull_arm4_3.setObjectName("pull_arm4_3")
+        #here...
+        #self.add_plot()
+
         MainWindow.setCentralWidget(self.centralWidget)
 
         self.retranslateUi(MainWindow)
@@ -167,11 +176,58 @@ class Ui_MainWindow(object):
         self.tableWidget.setSortingEnabled(__sortingEnabled)
         self.pull_arm4_3.setText(_translate("MainWindow", "Reset"))
 
-    def pulled(self, bandit_index):
-        self.tableWidget.item[bandit_index] += 1
+    def add_plot(self):
+
+        # a figure instance to plot on
+        self.figure = plt.figure()
         
-    def pull_bandit1(self):
-        print(self.sender.objectname())
+        # this is the Canvas Widget that displays the `figure`
+        # it takes the `figure` instance as a parameter to __init__
+        self.canvas = FigureCanvas(self.figure)
+
+        # this is the Navigation widget
+        # it takes the Canvas widget and a parent
+        #self.toolbar = NavigationToolbar(self.canvas, self)
+
+        # Just some button connected to `plot` method
+        self.button = QPushButton('Plot')
+        self.button.clicked.connect(self.plot)
+
+        # set the layout
+        #layout = QVBoxLayout(self.centralWidget)
+        #layout.setGeometry(QtCore.QRect(500, 340, 186, 41))
+        #self.pull_arm4_3.setGeometry(QtCore.QRect(10, 340, 186, 41))
+        
+        layout = QtWidgets.QGridLayout(self.centralWidget)
+        layout.setGeometry(QtCore.QRect(10, 10, 10, 10))
+    
+        #layout.addWidget(self.toolbar)
+        layout.addWidget(self.canvas)
+        layout.addWidget(self.button)
+        #self.setLayout(layout)
+
+    def plot(self):
+        ''' plot some random stuff '''
+        # random data
+        data = [random.random() for i in range(10)]
+        x = [i + 1 for i in range(10)]
+
+        # instead of ax.hold(False)
+        self.figure.clear()
+
+        # create an axis
+        ax = self.figure.add_subplot(111)
+
+        # discards the old graph
+        # ax.hold(False) # deprecated, see above
+
+        # plot data
+        
+        #ax.plot(data, '*-')
+        ax.bar(x, data)
+
+        # refresh canvas
+        self.canvas.draw()
 
 #handler for the signal aka slot
 def onClick():

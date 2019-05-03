@@ -2,6 +2,8 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from PyQt5 import QtCore, QtGui, QtWidgets
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+
 
 from bandit_world.Ui_basic_casino import Ui_MainWindow
 from bandit_world.environments import (BernoulliBandit, 
@@ -86,14 +88,9 @@ def experiment():
     agent = HumanCasinoInterface(50, environment, QtWidgets.QMainWindow())
     agent.solve()
 
-    
-
-    print_reward(agent)
-    visualise_agent_actions(agent)
+    #print_reward(agent)
+    #visualise_agent_actions(agent)
     sys.exit(app.exec_())
-
-    
-
 
 
 
@@ -113,6 +110,10 @@ class HumanCasinoInterface(object):
         self._ui.setupUi(main_window)
         init(self._ui, self._ui.tableWidget)
         connect_buttons(self._ui, self)
+
+    def __del__(self):
+        QtWidgets.qApp.quit()
+        
 
     def _get_total_reward(self):
         return self._total_reward

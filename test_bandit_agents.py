@@ -1,7 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from relearn.bandit_world.agents import EpsilonGreedy, AnnealingEpsilonGreedy
+from relearn.bandit_world.agents import (EpsilonGreedy, 
+                                         AnnealingEpsilonGreedy,
+                                         OptimisticInitialValues)
+
 from relearn.bandit_world.environments import (BernoulliBandit, 
                                                BernoulliCasino, 
                                                standard_bandit_problem,
@@ -12,10 +15,11 @@ def experiment():
     '''
     simple example experiment of the MAB
     '''
+    print('Epsilon-Greedy Agent')
     #to reproduce the result set a random seed
     np.random.seed(99)
 
-    bandit_arms = standard_bandit_problem()
+    bandit_arms = custom_bandit_problem(0.2, 0.5, 0.3, 0.75, 0.3)
 
     environment = BernoulliCasino(bandits=bandit_arms)
 
@@ -31,10 +35,11 @@ def anneal_experiment():
     simple example experiment of the MAB
     using AnnealingEpsilonGreedy
     '''
+    print('Annealing Epsilon-Greedy Agent')
     #to reproduce the result set a random seed
     np.random.seed(99)
 
-    bandit_arms = standard_bandit_problem()
+    bandit_arms = custom_bandit_problem(0.2, 0.5, 0.3, 0.75, 0.3)
 
     environment = BernoulliCasino(bandits=bandit_arms)
 
@@ -42,6 +47,26 @@ def anneal_experiment():
     agent.solve()
     
     print(agent._epsilon)
+    print_reward(agent)
+    visualise_agent_actions(agent)
+
+
+def optimistic_experiment():
+    '''
+    simple example experiment of the MAB
+    using AnnealingEpsilonGreedy
+    '''
+    print('Optimistic Initial Values')
+    #to reproduce the result set a random seed
+    np.random.seed(99)
+
+    bandit_arms = custom_bandit_problem(0.2, 0.5, 0.3, 0.75, 0.3)
+
+    environment = BernoulliCasino(bandits=bandit_arms)
+
+    agent = OptimisticInitialValues(budget=1000, environment=environment)
+    agent.solve()
+
     print_reward(agent)
     visualise_agent_actions(agent)
 
@@ -71,4 +96,5 @@ def visualise_agent_actions(agent):
 if __name__ == '__main__':
     experiment()
     anneal_experiment()
+    optimistic_experiment()
 

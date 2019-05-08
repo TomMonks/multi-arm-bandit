@@ -5,17 +5,16 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 
-from bandit_world.Ui_basic_casino import Ui_MainWindow
-from bandit_world.environments import (BernoulliBandit, 
-                                       BernoulliCasino, 
-                                       standard_bandit_problem,
+from relearn.bandit_world.Ui_basic_casino import Ui_MainWindow
+from relearn.bandit_world.environments import (BernoulliBandit, 
+                                               BernoulliCasino, 
+                                               standard_bandit_problem,
                                                custom_bandit_problem,
                                                small_bandit_problem)
 
 
     
-    #ui.tableWidget.item[bandit_index] += 1
-        
+       
 
 #handler for the signal aka slot
 def pull_bandit1(self):
@@ -67,8 +66,6 @@ def connect_buttons(ui, agent):
     ui.pull_arm3.clicked.connect(agent.pull_bandit3)
     ui.pull_arm4.clicked.connect(agent.pull_bandit4)
     ui.pull_arm4_2.clicked.connect(agent.pull_bandit5)
-
-
 
 
 def experiment():

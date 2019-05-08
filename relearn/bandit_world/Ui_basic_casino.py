@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1500, 399)
+        MainWindow.resize(800, 399)
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
         self.formLayoutWidget_2 = QtWidgets.QWidget(self.centralWidget)

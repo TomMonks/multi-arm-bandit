@@ -11,60 +11,59 @@ from relearn.bandit_world.environments import (BernoulliBandit,
                                                custom_bandit_problem,
                                                small_bandit_problem)
 
-def experiment():
+def epsilon_greedy_experiment(epsilon=0.1, budget=1000, random_state=None):
     '''
     simple example experiment of the MAB
     '''
-    print('Epsilon-Greedy Agent')
+    print('------\nAgent: Epsilon-Greedy')
     #to reproduce the result set a random seed
-    np.random.seed(99)
+    np.random.seed(seed=random_state)
 
     bandit_arms = custom_bandit_problem(0.2, 0.5, 0.3, 0.75, 0.3)
 
     environment = BernoulliCasino(bandits=bandit_arms)
 
-    agent = EpsilonGreedy(epsilon=0.1, budget=1000, environment=environment)
+    agent = EpsilonGreedy(epsilon=0.1, budget=budget, environment=environment)
     agent.solve()
     
     print_reward(agent)
     visualise_agent_actions(agent)
 
 
-def anneal_experiment():
+def anneal_experiment(budget=1000, random_state=None):
     '''
     simple example experiment of the MAB
     using AnnealingEpsilonGreedy
     '''
-    print('Annealing Epsilon-Greedy Agent')
+    print('--------\nAgent:\tAnnealing Epsilon-Greedy')
     #to reproduce the result set a random seed
-    np.random.seed(99)
+    np.random.seed(seed=random_state)
 
     bandit_arms = custom_bandit_problem(0.2, 0.5, 0.3, 0.75, 0.3)
 
     environment = BernoulliCasino(bandits=bandit_arms)
 
-    agent = AnnealingEpsilonGreedy(budget=1000, environment=environment)
+    agent = AnnealingEpsilonGreedy(budget=budget, environment=environment)
     agent.solve()
     
-    print(agent._epsilon)
     print_reward(agent)
     visualise_agent_actions(agent)
 
 
-def optimistic_experiment():
+def optimistic_experiment(budget=1000, random_state=None):
     '''
     simple example experiment of the MAB
     using AnnealingEpsilonGreedy
     '''
-    print('Optimistic Initial Values')
+    print('-------\nAgent: Optimistic Initial Values')
     #to reproduce the result set a random seed
-    np.random.seed(99)
+    np.random.seed(seed=random_state)
 
     bandit_arms = custom_bandit_problem(0.2, 0.5, 0.3, 0.75, 0.3)
 
     environment = BernoulliCasino(bandits=bandit_arms)
 
-    agent = OptimisticInitialValues(budget=1000, environment=environment)
+    agent = OptimisticInitialValues(budget=budget, environment=environment)
     agent.solve()
 
     print_reward(agent)
@@ -72,7 +71,9 @@ def optimistic_experiment():
 
 def print_reward(agent):
     print('Total reward: {}'.format(agent.total_reward))
-    print(agent._means)
+    print('\nFinal Model:\n------')
+    for bandit_index in range(len(agent._means)):
+        print('Bandit {0}:\t{1:.2f}'.format(bandit_index + 1, agent._means[bandit_index]))
 
 
 def visualise_agent_actions(agent):
@@ -94,7 +95,7 @@ def visualise_agent_actions(agent):
     plt.show()
 
 if __name__ == '__main__':
-    experiment()
+    #experiment()
     anneal_experiment()
     optimistic_experiment()
 

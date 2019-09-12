@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sat Apr 13 21:26:14 2019
+Optimisation module for multi-arm bandits applied to web analytics
 
-@author: tom
+Algorithms:
+1. epsilon-greedy
+2. upper confidence bound
+3. thompson sampling
 """
 
 import numpy as np
@@ -12,10 +15,10 @@ import matplotlib.pyplot as plt
 
 def main():
     simulated_data = pd.read_csv('data/Ads_CTR_Optimisation.csv')
-    ucb_ads_selected, ucb_reward = ucb(simulated_data)
+    #ucb_ads_selected, ucb_reward = ucb(simulated_data)
     ts_ads_selected, ts_reward  = thompson_sampling(simulated_data)
     
-    visualise_ads(ucb_ads_selected)
+    #visualise_ads(ucb_ads_selected)
     visualise_ads(ts_ads_selected)
     
     print('UCB_Reward:\t{}'.format(ucb_reward))
@@ -26,7 +29,7 @@ def main():
 
 def ucb(simulated_data):
     '''
-    Upper Confidence Bound Algorithm for reinforcement learning in the
+    Upper Confidence Bound Algorithm for reinforcement learning in the 
     online bernouli multi-arm bandit problem
     
     Keyword arguments:

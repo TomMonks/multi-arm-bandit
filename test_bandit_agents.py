@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 
 from relearn.bandit_world.agents import (EpsilonGreedy, 
                                          AnnealingEpsilonGreedy,
-                                         OptimisticInitialValues)
+                                         OptimisticInitialValues,
+                                         UpperConfidenceBound)
 
 from relearn.bandit_world.environments import (BernoulliBandit, 
                                                BernoulliCasino, 
@@ -94,8 +95,30 @@ def visualise_agent_actions(agent):
     plt.ylabel('Number of times each arm was selected')
     plt.show()
 
+
+def ucb_experiment(budget=1000, random_state=None):
+    '''
+    simple example experiment of the MAB
+    '''
+    print('------\nAgent: UCB')
+    #to reproduce the result set a random seed
+    np.random.seed(seed=random_state)
+
+    bandit_arms = custom_bandit_problem(0.2, 0.5, 0.3, 0.75, 0.3)
+
+    environment = BernoulliCasino(bandits=bandit_arms)
+
+    agent = UpperConfidenceBound(budget=budget, environment=environment)
+    agent.solve()
+    
+    print_reward(agent)
+    visualise_agent_actions(agent)
+
+
 if __name__ == '__main__':
     #experiment()
-    anneal_experiment()
-    optimistic_experiment()
+    seed = 900
+    anneal_experiment(random_state=seed)
+    optimistic_experiment(random_state=seed)
+    ucb_experiment(random_state=seed)
 

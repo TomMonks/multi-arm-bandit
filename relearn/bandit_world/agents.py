@@ -325,7 +325,97 @@ class OptimisticInitialValues(EpsilonGreedy):
 
 
 
+class UpperConfidenceBound(object):
+
+    def __init__(self, budget, environment):
+        '''
+        Constructor method
+        '''
+        environment.register_observer(self)
+        self._validate_budget(budget)
+        self._env = environment
+        self._total_rounds = budget
+        self._total_reward = 0
+        self._current_round = 0
+        self._actions = np.zeros(environment.number_of_arms, np.int32)
+        self._means = np.zeros(environment.number_of_arms, np.float64)
+        self._upper_bounds = np.zeros(environment.number_of_arms, np.float64)
+    
         
+    def _validate_budget(self, budget):
+        if budget < 0:
+            msg = 'budget argument must be a int > 0'
+            raise ValueError(msg)
+            
+            
+    def _get_total_reward(self):
+        return self._total_reward
+
+    def _get_action_history(self):
+        return self._actions
+    
+    
+    def solve(self):
+        '''
+        Run the epsilon greedy algorithm in the 
+        environment to find the best arm 
+        '''
+        for i in range(self._total_rounds):
+            
+            max_upper_bound_index = np.argmax(self._upper_bounds)
+            self._env.action(max_upper_bound_index)            
+            
+            self._current_round += 1
+    
+        
+    
+    def feedback(self, *args, **kwargs):
+        '''
+        Feedback from the environment
+        Recieves a reward and updates understanding
+        of an arm
+
+        Keyword arguments:
+        ------
+        *args -- list of argument
+                 0  sender object
+                 1. arm index to update
+                 2. reward
+
+        *kwards -- dict of keyword arguments:
+                   None expected!
+
+        '''
+        arm_index = args[1]
+        reward = args[2]
+        self._total_reward += reward
+        self._actions[arm_index] +=1
+        self._means[arm_index] = self.updated_reward_estimate(arm_index, reward)
+        
+        deltas = np.sqrt(3/2 * (np.log(self._current_round + 1) / self._actions))
+        self._upper_bounds = self._means + deltas
+        
+
+    def updated_reward_estimate(self, arm_index, reward):
+        '''
+        Calculate the new running average of the arm
+
+        Keyword arguments:
+        ------
+        arm_index -- int, index of the array to update
+        reward -- float, reward recieved from the last action
+
+        Returns:
+        ------
+        float, the new mean estimate for the selected arm
+        '''
+        n = self._actions[arm_index]
+        current_value = self._means[arm_index]
+        new_value = ((n - 1) / float(n)) * current_value + (1 / float(n)) * reward
+        return new_value
+
+    total_reward = property(_get_total_reward)
+    actions = property(_get_action_history)
 
     
 

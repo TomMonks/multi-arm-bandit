@@ -87,6 +87,12 @@ class EpsilonGreedy(object):
             msg = 'budget argument must be a int > 0'
             raise ValueError(msg)
 
+    def reset(self):
+        self._total_reward = 0
+        self._current_round = 0
+        self._actions = np.zeros(self._env.number_of_arms, np.int32)
+        self._means = np.zeros(self._env.number_of_arms, np.float64)
+        
     def _get_total_reward(self):
         return self._total_reward
 
@@ -178,6 +184,7 @@ class EpsilonGreedy(object):
 
     total_reward = property(_get_total_reward)
     actions = property(_get_action_history)
+    best_arm = property(_best_arm)
 
 
 
@@ -347,13 +354,29 @@ class UpperConfidenceBound(object):
             msg = 'budget argument must be a int > 0'
             raise ValueError(msg)
             
-            
+    def reset(self):
+        self._total_reward = 0
+        self._current_round = 0
+        self._actions = np.zeros(self._env.number_of_arms, np.int32)
+        self._means = np.zeros(self._env.number_of_arms, np.float64)
+        self._upper_bounds = np.zeros(self._env.number_of_arms, np.float64)
+
     def _get_total_reward(self):
         return self._total_reward
 
     def _get_action_history(self):
         return self._actions
     
+    def _get_best_arm(self):
+        '''
+        Return the index of the arm 
+        with the highest expected value
+
+        Returns:
+        ------
+        int, Index of the best arm
+        '''
+        return np.argmax(self._means)
     
     def solve(self):
         '''
@@ -416,6 +439,7 @@ class UpperConfidenceBound(object):
 
     total_reward = property(_get_total_reward)
     actions = property(_get_action_history)
+    best_arm = property(_get_best_arm)
 
     
 

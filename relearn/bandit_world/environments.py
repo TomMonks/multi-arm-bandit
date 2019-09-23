@@ -176,6 +176,15 @@ def small_bandit_problem():
     return custom_bandit_problem(0.3, 0.5, 0.1)
 
 
+
+def guassian_bandit_sequence(start, end, step=1):
+    '''
+    Sequence of GuassianBandit Arms.  Assumes unit variance. 
+    e.g. start = 1, end = 10 return 10 bandits arms with means 1 through 10.
+    '''    
+    return [GaussianBandit(mean) for mean in range(start, end, stop)]
+
+
 def standard_ranking_and_selection_problem():
     '''
     Creates a list of 10 GuassianBandit objects 

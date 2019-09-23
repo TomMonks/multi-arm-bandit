@@ -176,7 +176,84 @@ def small_bandit_problem():
     return custom_bandit_problem(0.3, 0.5, 0.1)
 
 
+def standard_ranking_and_selection_problem():
+    '''
+    Creates a list of 10 GuassianBandit objects 
+    means:
+    1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0
+    Unit variance (1.0)
+
+    Returns:
+    ------
+    list, GaussianBandits size = 10
+    '''
+
+    return custom_guass_bandit_problem(1.0, 2.0, 3.0, 4.0, 5.0, 
+                                       6.0, 7.0, 8.0, 9.0, 10.0)
 
 
+def custom_guass_bandit_problem(*means):
+    '''
+    Creates a list of BernouliBandit objects with
+    user specified means
+
+    Keyword arguments:
+    ------
+    *means - variable size list of means
+
+    Returns:
+    ------
+    list, BernoulliBandits size = len(means)
+    '''
+    return [GaussianBandit(mean) for mean in means]
 
 
+class GaussianBandit(object):
+    '''
+    Classic one armed bandit gambling machine.
+
+    A user plays the bandit by pulling its arm.
+
+    The bandit returns a reward normally distribution 
+    with mean mu and stdev sigma
+    '''
+
+    def __init__(self, mu, sigma=1.0):
+        '''
+        Constructor method for Bernoulli Bandit
+
+        Keyword arguments:
+        -----
+        mu -- float, mean of the normal distribution
+        sigma -- float, stdev of the normal distribution (default = 1.0)
+
+        '''
+        self._mu = mu
+        self._sigma = sigma
+        self._number_of_plays = 0
+        self._total_reward = 0
+        self._observers = []
+
+    def play(self):
+        '''
+        Pull the arm on the bernoulli bandit
+
+        Returns:
+        -----
+        reward -- int with value = 0 when no reward
+                  and 1 when the pull results in a win
+        '''      
+        reward = np.random.normal(self._mu, self._sigma)
+
+        self._total_reward += reward
+        self._number_of_plays += 1
+
+        return reward
+
+    def reset(self):
+        '''
+        Reset the number of plays and 
+        total rewards to zero.
+        '''
+        self._number_of_plays = 0
+        self._total_reward = 0

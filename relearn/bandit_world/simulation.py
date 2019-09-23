@@ -67,6 +67,8 @@ class Experiment(object):
         correct_selections = (selections == self._best_index).sum()
         
         p_correct_selections = correct_selections / self._reps
+        print(correct_selections)
+        print(self._reps)
 
         return ExperimentResults(selections, correct_selections, p_correct_selections)
     

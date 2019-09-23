@@ -6,11 +6,13 @@ from relearn.bandit_world.agents import (EpsilonGreedy,
                                          OptimisticInitialValues,
                                          UpperConfidenceBound)
 
-from relearn.bandit_world.environments import (BernoulliBandit, 
+from relearn.bandit_world.environments import (GaussianBandit,
+                                               BernoulliBandit, 
                                                BernoulliCasino, 
                                                standard_bandit_problem,
                                                custom_bandit_problem,
-                                               small_bandit_problem)
+                                               small_bandit_problem,
+                                               standard_ranking_and_selection_problem)
 
 from relearn.bandit_world.simulation import (AgentSimulation,
                                              Experiment,
@@ -127,7 +129,7 @@ def epsilon_greedy_simulation(epsilon=0.1, budget=1000, replications=1000,random
     #to reproduce the result set a random seed
     np.random.seed(seed=random_state)
 
-    bandit_arms = custom_bandit_problem(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
+    bandit_arms = standard_ranking_and_selection_problem()
 
     environment = BernoulliCasino(bandits=bandit_arms)
 
@@ -135,11 +137,19 @@ def epsilon_greedy_simulation(epsilon=0.1, budget=1000, replications=1000,random
     
     exp = Experiment(environment, agent, 9, replications=replications)
 
+    print('------\nRunning Simulation for {0} replications'.format(replications))
     results = exp.execute()
+    results.exp_name = 'Agent: Epsilon-Greedy'
 
-    print('Proportion correct selections {0}'.format(results.p_correct_selections))
-    print('Number correct selections {0}'.format(results.correct_selections))
-    print('Means {0}'.format(agent._means))
+    return results
+
+
+def print_experiment_results(result_array):
+    for result in result_array:
+        print('-----\n{0}'.format(result.exp_name))
+        print('Proportion correct selections {0}'.format(result.p_correct_selections))
+        print('Number correct selections {0}'.format(result.correct_selections))
+
 
 def ucb_simulation(budget=1000, replications=1000, random_state=None):
     '''
@@ -149,7 +159,7 @@ def ucb_simulation(budget=1000, replications=1000, random_state=None):
     #to reproduce the result set a random seed
     np.random.seed(seed=random_state)
 
-    bandit_arms = custom_bandit_problem(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
+    bandit_arms = standard_ranking_and_selection_problem()
 
     environment = BernoulliCasino(bandits=bandit_arms)
 
@@ -157,11 +167,10 @@ def ucb_simulation(budget=1000, replications=1000, random_state=None):
     
     exp = Experiment(environment, agent, 9, replications=replications)
 
+    print('------\nRunning Simulation for {0} replications'.format(replications))
     results = exp.execute()
-
-    print('Proportion correct selections {0}'.format(results.p_correct_selections))
-    print('Number correct selections {0}'.format(results.correct_selections))
-    print('Means {0}'.format(agent._means))
+    results.exp_name = 'Agent: Upper-Confidence-Bound'
+    return results
     
 
 if __name__ == '__main__':
@@ -170,10 +179,14 @@ if __name__ == '__main__':
     #anneal_experiment(random_state=seed)
     #optimistic_experiment(random_state=seed)
     #ucb_experiment(random_state=seed)
-    replications = 1000
-    budget=400
-    epsilon_greedy_simulation(budget=budget, replications=replications)
-    ucb_simulation(budget=budget, replications=replications)
+    replications = 10000
+    budget = 800
+    results = []
+    result = epsilon_greedy_simulation(budget=budget, replications=replications)
+    results.append(result)
+    result = ucb_simulation(budget=budget, replications=replications)
+    results.append(result)
+    print_experiment_results(results)
     
 
 

@@ -130,7 +130,7 @@ def epsilon_greedy_simulation(epsilon=0.1, budget=1000, replications=1000,random
     #to reproduce the result set a random seed
     np.random.seed(seed=random_state)
 
-    bandit_arms = standard_ranking_and_selection_problem()
+    bandit_arms = guassian_bandit_sequence(1, 11)
 
     environment = BernoulliCasino(bandits=bandit_arms)
 
@@ -160,7 +160,6 @@ def ucb_simulation(budget=1000, replications=1000, random_state=None):
     #to reproduce the result set a random seed
     np.random.seed(seed=random_state)
 
-    #bandit_arms = standard_ranking_and_selection_problem()
     bandit_arms = guassian_bandit_sequence(1, 11)
     
     environment = BernoulliCasino(bandits=bandit_arms)

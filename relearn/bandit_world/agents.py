@@ -415,7 +415,11 @@ class UpperConfidenceBound(object):
         self._actions[arm_index] +=1
         self._means[arm_index] = self.updated_reward_estimate(arm_index, reward)
         
-        deltas = np.sqrt(3/2 * (np.log(self._current_round + 1) / self._actions))
+        #first run through divides by zero.  In numpy this operation yields inf.
+        #the with np.errstate() call/context avoid warning user of the operation 
+        with np.errstate(divide='ignore', invalid='ignore'):
+            deltas = np.sqrt(3/2 * (np.log(self._current_round + 1) / self._actions))
+        
         self._upper_bounds = self._means + deltas
         
 

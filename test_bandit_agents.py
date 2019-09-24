@@ -111,7 +111,8 @@ def ucb_experiment(budget=1000, random_state=None):
     #to reproduce the result set a random seed
     np.random.seed(seed=random_state)
 
-    bandit_arms = custom_bandit_problem(0.2, 0.5, 0.3, 0.75, 0.3)
+    #bandit_arms = custom_bandit_problem(0.2, 0.5, 0.3, 0.75, 0.3)
+    bandit_arms = guassian_bandit_sequence(1, 11)
 
     environment = BernoulliCasino(bandits=bandit_arms)
 

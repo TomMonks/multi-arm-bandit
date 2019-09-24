@@ -181,8 +181,19 @@ def guassian_bandit_sequence(start, end, step=1):
     '''
     Sequence of GuassianBandit Arms.  Assumes unit variance. 
     e.g. start = 1, end = 10 return 10 bandits arms with means 1 through 10.
+
+    Parameters:
+    -------
+    start - int, start of sequence of means (inclusive)
+    end - int, end of sequence of means (exclusive)
+    step - int, step size for sequence (default = 1)
+
+    Returns:
+    -------
+    list of GaussianBandit objects ordered by means
+
     '''    
-    return [GaussianBandit(mean) for mean in range(start, end, stop)]
+    return [GaussianBandit(mean) for mean in range(start, end, step)]
 
 
 def standard_ranking_and_selection_problem():

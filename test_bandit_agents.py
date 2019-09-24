@@ -12,7 +12,8 @@ from relearn.bandit_world.environments import (GaussianBandit,
                                                standard_bandit_problem,
                                                custom_bandit_problem,
                                                small_bandit_problem,
-                                               standard_ranking_and_selection_problem)
+                                               standard_ranking_and_selection_problem,
+                                               guassian_bandit_sequence)
 
 from relearn.bandit_world.simulation import (AgentSimulation,
                                              Experiment,
@@ -159,8 +160,9 @@ def ucb_simulation(budget=1000, replications=1000, random_state=None):
     #to reproduce the result set a random seed
     np.random.seed(seed=random_state)
 
-    bandit_arms = standard_ranking_and_selection_problem()
-
+    #bandit_arms = standard_ranking_and_selection_problem()
+    bandit_arms = guassian_bandit_sequence(1, 11)
+    
     environment = BernoulliCasino(bandits=bandit_arms)
 
     agent = UpperConfidenceBound(budget=budget, environment=environment)
@@ -179,8 +181,8 @@ if __name__ == '__main__':
     #anneal_experiment(random_state=seed)
     #optimistic_experiment(random_state=seed)
     #ucb_experiment(random_state=seed)
-    replications = 10000
-    budget = 800
+    replications = 1000
+    budget = 300
     results = []
     result = epsilon_greedy_simulation(budget=budget, replications=replications)
     results.append(result)

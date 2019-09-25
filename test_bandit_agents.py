@@ -17,7 +17,8 @@ from relearn.bandit_world.environments import (GaussianBandit,
 
 from relearn.bandit_world.simulation import (AgentSimulation,
                                              Experiment,
-                                             ExperimentResults)
+                                             ExperimentResults,
+                                             GridExperiment)
 
 def epsilon_greedy_experiment(epsilon=0.1, budget=1000, random_state=None):
     '''
@@ -146,6 +147,32 @@ def epsilon_greedy_simulation(epsilon=0.1, budget=1000, replications=1000,random
     return results
 
 
+def epsilon_greedy_grid(replications=100,random_state=None):
+    '''
+    simple example experiment of the MAB
+    '''
+    print('------\nAgent: Epsilon-Greedy')
+    #to reproduce the result set a random seed
+    np.random.seed(seed=random_state)
+
+    bandit_arms = guassian_bandit_sequence(1, 11)
+
+    environment = BernoulliCasino(bandits=bandit_arms)
+
+    agent = EpsilonGreedy(epsilon=0.1, budget=0, environment=environment)
+    
+    param_grid = {'budget':[100, 200, 300, 400, 500], 
+                  'epsilon':[0.1, 0.2, 0.3]}
+
+    exp = GridExperiment(agent, environment, param_grid, 9, replications=replications)
+
+    print('------\nRunning GridExperiment for {0} replications'.format(replications))
+    df = exp.fit()
+    print(df)
+
+    
+
+
 def print_experiment_results(result_array):
     for result in result_array:
         print('-----\n{0}'.format(result.exp_name))
@@ -181,14 +208,15 @@ if __name__ == '__main__':
     #anneal_experiment(random_state=seed)
     #optimistic_experiment(random_state=seed)
     #ucb_experiment(random_state=seed)
-    replications = 1000
+    replications = 100
     budget = 300
     results = []
     result = epsilon_greedy_simulation(budget=budget, replications=replications)
     results.append(result)
-    result = ucb_simulation(budget=budget, replications=replications)
-    results.append(result)
+    # result = ucb_simulation(budget=budget, replications=replications)
+    # results.append(result)
     print_experiment_results(results)
+    epsilon_greedy_grid(replications=1000)
     
 
 

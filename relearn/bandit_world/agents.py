@@ -92,6 +92,18 @@ class EpsilonGreedy(object):
         self._current_round = 0
         self._actions = np.zeros(self._env.number_of_arms, np.int32)
         self._means = np.zeros(self._env.number_of_arms, np.float64)
+
+    def _get_epsilon(self):
+        return self._epsilon
+    
+    def _set_epsilon(self, epsilon):
+        self._epsilon = epsilon
+        
+    def _get_budget(self):
+        return self._total_rounds
+        
+    def _set_budget(self, budget):
+        self._total_rounds = budget
         
     def _get_total_reward(self):
         return self._total_reward
@@ -185,7 +197,8 @@ class EpsilonGreedy(object):
     total_reward = property(_get_total_reward)
     actions = property(_get_action_history)
     best_arm = property(_best_arm)
-
+    budget = property(_get_budget, _set_budget)
+    epsilon = property(_get_epsilon, _set_epsilon)    
 
 
 class AnnealingEpsilonGreedy(EpsilonGreedy):

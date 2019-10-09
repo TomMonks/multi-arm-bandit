@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 from relearn.bandit_world.agents import (EpsilonGreedy, 
                                          AnnealingEpsilonGreedy,
                                          OptimisticInitialValues,
-                                         UpperConfidenceBound)
+                                         UpperConfidenceBound,
+                                         ThompsonSamplingBeta)
 
 from relearn.bandit_world.environments import (GaussianBandit,
                                                BernoulliBandit, 
@@ -78,6 +79,25 @@ def optimistic_experiment(budget=1000, random_state=None):
     print_reward(agent)
     visualise_agent_actions(agent)
 
+def ts_experiment(budget=1000, random_state=None):
+    '''
+    simple example experiment of the MAB
+    using AnnealingEpsilonGreedy
+    '''
+    print('-------\nAgent: Thompson-Sampling')
+    #to reproduce the result set a random seed
+    np.random.seed(seed=random_state)
+
+    bandit_arms = custom_bandit_problem(0.2, 0.5, 0.3, 0.75, 0.3)
+
+    environment = BernoulliCasino(bandits=bandit_arms)
+
+    agent = ThompsonSamplingBeta(budget=budget, environment=environment)
+    agent.solve()
+
+    print_reward(agent)
+    visualise_agent_actions(agent)
+
 def print_reward(agent):
     print('Total reward: {}'.format(agent.total_reward))
     print('\nFinal Model:\n------')
@@ -112,8 +132,8 @@ def ucb_experiment(budget=1000, random_state=None):
     #to reproduce the result set a random seed
     np.random.seed(seed=random_state)
 
-    #bandit_arms = custom_bandit_problem(0.2, 0.5, 0.3, 0.75, 0.3)
-    bandit_arms = guassian_bandit_sequence(1, 11)
+    bandit_arms = custom_bandit_problem(0.2, 0.5, 0.3, 0.75, 0.3)
+    #bandit_arms = guassian_bandit_sequence(1, 11)
 
     environment = BernoulliCasino(bandits=bandit_arms)
 
@@ -200,23 +220,48 @@ def ucb_simulation(budget=1000, replications=1000, random_state=None):
     results = exp.execute()
     results.exp_name = 'Agent: Upper-Confidence-Bound'
     return results
+
+
+def ts_simulation(budget=1000, replications=1000, random_state=None):
+    '''
+    simple example experiment of the MAB
+    '''
+    print('------\nAgent: Thompson-Sampling-Beta')
+    #to reproduce the result set a random seed
+    np.random.seed(seed=random_state)
+
+    bandit_arms = guassian_bandit_sequence(1, 11)
+    
+    environment = BernoulliCasino(bandits=bandit_arms)
+
+    agent = ThompsonSamplingBeta(budget=budget, environment=environment)
+    
+    exp = Experiment(environment, agent, 9, replications=replications)
+
+    print('------\nRunning Simulation for {0} replications'.format(replications))
+    results = exp.execute()
+    results.exp_name = 'Agent: Thompson-Sampling-Beta'
+    return results
     
 
 if __name__ == '__main__':
     #experiment()
-    #seed = 900
-    #anneal_experiment(random_state=seed)
-    #optimistic_experiment(random_state=seed)
-    #ucb_experiment(random_state=seed)
-    replications = 100
-    budget = 300
-    results = []
-    result = epsilon_greedy_simulation(budget=budget, replications=replications)
-    results.append(result)
-    # result = ucb_simulation(budget=budget, replications=replications)
-    # results.append(result)
-    print_experiment_results(results)
-    epsilon_greedy_grid(replications=1000)
+    seed = 900
+    anneal_experiment(random_state=seed)
+    optimistic_experiment(random_state=seed)
+    ucb_experiment(random_state=seed)
+    ts_experiment(random_state=seed)
+    #replications = 1000
+    #budget = 500
+    #results = []
+    #result = epsilon_greedy_simulation(budget=budget, replications=replications)
+    #results.append(result)
+    #result = ucb_simulation(budget=budget, replications=replications)
+    #results.append(result)
+    #result = ts_simulation(budget=budget, replications=replications)
+    #results.append(result)
+    #print_experiment_results(results)
+    #epsilon_greedy_grid(replications=1000)
     
 
 
